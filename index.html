@@ -176,7 +176,7 @@ function cfgSb(){const u=prompt('URL de Supabase (https://xxxx.supabase.co)',cfg
 async function live(){try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+A.filter(a=>a.id).map(a=>a.id).join(',')+'&vs_currencies=usd');const j=await r.json();let n=0;A.forEach(a=>{const p=j[a.id]&&j[a.id].usd;if(p){S.p[a.s]=p;n++}});S.p.GLDx=S.p.PAXG*.093;A.forEach(a=>S.h[a.s]=[S.p[a.s]]);toast(n+' precios reales cargados')}catch(e){toast('Sin conexión: precios de referencia')}}
 function npUI(){const n=+$('#np').value;$('#n1').style.display=n>1?'':'none'}
 async function newGame(){if(!$('#ob').value.trim())return toast('Escribe el objetivo del monto (ej. comprar un terreno)');const m=MD[$('#mk').value],np=Math.min(2,Math.max(1,+$('#np').value||1));
-S={obj:$('#ob').value.trim(),t:m.t,g:m.g,sal:m.sal,turn:1,cp:0,v:0,p:{},h:{},pl:[],news:[{k:'side',t:'Apertura de mercados: sesión inicial con volumen moderado. ¡Que comience la partida!'}],log:[],d0:Date.now()};
+S={obj:$('#ob').value.trim(),mode:$('#mk').value,t:m.t,g:m.g,sal:m.sal,turn:1,cp:0,v:0,p:{},h:{},pl:[],news:[{k:'side',t:'Apertura de mercados: sesión inicial con volumen moderado. ¡Que comience la partida!'}],log:[],d0:Date.now()};
 A.forEach(a=>{S.p[a.s]=a.p;S.h[a.s]=[a.p]});await live();S.d={};A.forEach(a=>S.d[a.s]=bridge(S.p[a.s]*(1+(rnd()-.5)*a.vol/100*.8),S.p[a.s],a.vol));
 for(let i=0;i<np;i++)S.pl.push({n:$('#n'+i).value.trim()||('Jugador '+(i+1)),bank:m.b,cash:0,h:{},w:['BTC','NVDAx','AAPLx']});
 ui.a='h';save();R();how(1)}
@@ -202,7 +202,10 @@ if(S.over)return;
 if(ho)dlg(`<h1 class="t1">Turno de ${esc(S.pl[S.cp].n)}</h1><p>Pasa el dispositivo a <b>${esc(S.pl[S.cp].n)}</b>. Cuando termine su turno, el mercado avanzará.</p><button onclick="dlx()">Continuar</button>`);
 else toast('Turno '+S.turn+' · el mercado se movió')}
 function bridge(p0,p1,vol,n=25){const sg=vol/100*.5/Math.sqrt(n),W=[0];let w=0;for(let i=1;i<n;i++){w+=randn();W.push(w)}const o=[];for(let i=0;i<n;i++){const t=i/(n-1);o.push(Math.max(1e-9,(p0+(p1-p0)*t)*(1+(W[i]-t*W[n-1])*sg)))}o[0]=p0;o[n-1]=p1;return o}
-function dir(){const r=rnd();return r<.5?'up':r<.75?'down':'side'}
+function dir(){const r=rnd(),md=(S&&S.mode)||'m';
+if(md=='r'){return r<.68?'up':r<.84?'side':'down'}
+if(md=='l'){return r<.48?'up':r<.74?'down':'side'}
+return r<.55?'up':r<.78?'down':'side'}
 function advance(){S.turn++;const ev=[];
 const g=dir();ev.push({k:g,l:'🌐 General',t:pick(GN[g]),all:1});
 if(rnd()<.6){const tc=pick(Object.keys(CN)),d=dir();ev.push({k:d,l:'🏭 Sector',t:pick(NW[d]).replace('{c}',CN[tc]),c:tc})}
@@ -211,8 +214,10 @@ const pool=SP[ta.s]||GS[isX(ta.s)?'x':'c'];
 const txt=d=='side'?`${ta.n} opera en rango, sin catalizador claro este turno`:(pool[d=='up'?0:1]||pool[0]).replace('{a}',ta.n);
 ev.push({k:d,l:'🎯 '+ta.s,t:txt,s:ta.s})}
 if(S.turn>2&&rnd()<.12){const x=pick(A.filter(a=>isX(a.s)&&S.p[a.s]>150));if(x){S.p[x.s]/=2;S.h[x.s]=S.h[x.s].map(y=>y/2);S.pl.forEach(p=>{const h=p.h[x.s];if(h){h.q*=2;h.k=(h.k||[]).map(y=>y/2)}});ev.push({k:'up',l:'✂ Split '+x.s,t:`${x.n} anuncia split 2:1: el precio se divide y tus acciones se duplican`,s:x.s,sp:1})}}
-A.forEach(a=>{const v=a.vol/100;let m=1,dr=0;ev.forEach(e=>{if(e.sp||!(e.all||(e.c&&e.c==a.c)||e.s==a.s))return;if(e.k=='side')m=.3;else dr+=(e.k=='up'?1:-1)*v*(e.all?.9:e.c?1.2:2.5)*(.6+rnd()*.8)});
-const r=Math.max(-.6,Math.min(1,randn()*v*.6*m+dr));const p0=S.p[a.s];S.p[a.s]=Math.max(1e-6,p0*(1+r));S.d=S.d||{};S.d[a.s]=bridge(p0,S.p[a.s],a.vol);S.h[a.s].push(S.p[a.s]);if(S.h[a.s].length>40)S.h[a.s].shift()});
+A.forEach(a=>{const v=a.vol/100;let m=1,dr=0;const md=S.mode||'m';const upB=md=='r'?1.25:md=='m'?1.1:1,dnB=md=='r'?.55:md=='m'?.85:1;
+ev.forEach(e=>{if(e.sp||!(e.all||(e.c&&e.c==a.c)||e.s==a.s))return;if(e.k=='side')m=.3;else dr+=(e.k=='up'?upB:-dnB)*v*(e.all?.9:e.c?1.2:2.5)*(.6+rnd()*.8)});
+const floor=md=='r'?-.28:md=='m'?-.45:-.55;
+const r=Math.max(floor,Math.min(1,randn()*v*.55*m+dr));const p0=S.p[a.s];S.p[a.s]=Math.max(1e-6,p0*(1+r));S.d=S.d||{};S.d[a.s]=bridge(p0,S.p[a.s],a.vol);S.h[a.s].push(S.p[a.s]);if(S.h[a.s].length>40)S.h[a.s].shift()});
 S.news=ev;ev.forEach(e=>S.log.unshift('T'+S.turn+' '+ICO[e.k]+' '+e.l+' · '+e.t));S.log=S.log.slice(0,30);
 S.pl.forEach(p=>{p.bank=p.bank*1.003+S.sal;Object.entries(p.h).forEach(([s,h])=>{(h.k=h.k||[]).push(S.p[s]);if(h.k.length>80)h.k.shift()})})}
 function trade(s,k){if(!mine())return toast('No es tu turno');if(ui.from!='i'&&ui.a!='i')return toast('Opera desde Lulubex (Invertir)');const v=V(),amt=+ui.am,p=S.p[s];if(!(amt>0))return toast('Escribe un monto en USD para '+(k=='b'?'comprar':'vender'));
