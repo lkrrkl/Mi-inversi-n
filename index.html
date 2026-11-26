@@ -202,7 +202,7 @@ if(S.over)return;
 if(ho)dlg(`<h1 class="t1">Turno de ${esc(S.pl[S.cp].n)}</h1><p>Pasa el dispositivo a <b>${esc(S.pl[S.cp].n)}</b>. Cuando termine su turno, el mercado avanzará.</p><button onclick="dlx()">Continuar</button>`);
 else toast('Turno '+S.turn+' · el mercado se movió')}
 function bridge(p0,p1,vol,n=25){const sg=vol/100*.5/Math.sqrt(n),W=[0];let w=0;for(let i=1;i<n;i++){w+=randn();W.push(w)}const o=[];for(let i=0;i<n;i++){const t=i/(n-1);o.push(Math.max(1e-9,(p0+(p1-p0)*t)*(1+(W[i]-t*W[n-1])*sg)))}o[0]=p0;o[n-1]=p1;return o}
-function dir(){return pick(['up','down','side'])}
+function dir(){const r=rnd();return r<.5?'up':r<.75?'down':'side'}
 function advance(){S.turn++;const ev=[];
 const g=dir();ev.push({k:g,l:'🌐 General',t:pick(GN[g]),all:1});
 if(rnd()<.6){const tc=pick(Object.keys(CN)),d=dir();ev.push({k:d,l:'🏭 Sector',t:pick(NW[d]).replace('{c}',CN[tc]),c:tc})}
