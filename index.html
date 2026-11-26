@@ -2,9 +2,25 @@
 <style>
 *{box-sizing:border-box;margin:0}
 body{font:16px system-ui,sans-serif;color:#eee;min-height:100vh;background:radial-gradient(#1c6b4a,#0a2e21);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#tbx{max-width:1400px;margin:10px auto 0;padding:0 10px;display:none;align-items:center;gap:8px;flex-wrap:wrap}
+#tbx.on{display:flex}
+#tbx .ib{width:44px;height:44px;border-radius:12px;border:0;background:#ffffff22;color:#fff;font-size:20px;display:grid;place-items:center;cursor:pointer;padding:0;margin:0;line-height:1;box-shadow:0 2px 0 #0004}
+#tbx .ib:active{transform:scale(.94)}
+#tbx .ib.et{width:58px;height:58px;font-size:28px;background:linear-gradient(180deg,#ffe082,#ffb300);color:#2b1d00;border-radius:16px;box-shadow:0 4px 0 #b37b00,0 6px 14px #0006;margin-right:6px}
+#tbx .ib.et:disabled{opacity:.45;filter:grayscale(.4)}
 #app{display:grid;grid-template-columns:1fr 370px;gap:14px;padding:10px;max-width:1400px;margin:auto}
 #board{grid-area:1/1;align-self:start}#mon{grid-area:2/1}#pw{grid-area:1/2/3/3}
-@media(max-width:900px){#app{grid-template-columns:1fr}#mon,#pw{grid-area:2/1}#pw{overflow:hidden;pointer-events:none;height:700px}.phone{pointer-events:auto;position:static!important;transition:transform .6s cubic-bezier(.5,0,.2,1)}#pw.down .phone{transform:translateY(calc(100% - 64px))}#mon{height:700px}}
+@media(max-width:900px){
+#app{grid-template-columns:1fr}
+#mon,#pw{grid-area:2/1}
+#mon{height:700px;z-index:1;position:relative;overflow:hidden}
+#pw{overflow:hidden;pointer-events:none;height:700px;z-index:5;position:relative}
+.phone{pointer-events:auto;position:relative!important;z-index:6;transition:transform .6s cubic-bezier(.5,0,.2,1);isolation:isolate}
+#pw.down .phone{transform:translateY(calc(100% - 64px))}
+#tbx{padding:4px 8px 0;gap:6px;justify-content:center}
+#tbx .ib{width:40px;height:40px;font-size:18px}
+#tbx .ib.et{width:52px;height:52px;font-size:26px}
+}
 #board{border:12px solid #5a3a1c;border-radius:14px;padding:14px;background:repeating-linear-gradient(45deg,#14573c 0 18px,#124d37 18px 36px);box-shadow:inset 0 0 50px #000a,0 12px 30px #000a}
 h1{font:700 26px Georgia,serif;color:#ffd54a;text-shadow:0 2px 0 #000}
 .track{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}
@@ -56,14 +72,37 @@ pre{font-size:10px;background:#eee;padding:6px;overflow:auto}
 .ab{position:absolute;top:28%;left:50%;transform:translate(-50%,0);background:#fff;color:#14231a;font:800 26px system-ui;padding:18px 24px;border-radius:18px;text-align:center;box-shadow:0 10px 40px #000a;animation:pop .6s ease-out;max-width:90vw}.ab small{display:block;font:500 15px system-ui;margin-top:6px;color:#555}
 @keyframes pop{from{transform:translate(-50%,0) scale(.3);opacity:0}}
 @media(max-width:600px){body{font-size:17px}#app{padding:6px;gap:8px}#board{border-width:8px;padding:10px}h1{font-size:23px}button{padding:12px 13px;font-size:16px}.card{font-size:16px}.sq{font-size:13px}.phone{width:100%;height:calc(100vh - 12px);height:calc(100svh - 12px);border-width:6px;border-radius:30px}#pw,#mon{height:calc(100vh - 12px);height:calc(100svh - 12px)}#scr{font-size:17px;padding:8px}.w{font-size:16px}.row{font-size:16px;grid-template-columns:40px 1fr auto 30px;padding:10px 2px}.ic{width:64px;height:64px}.apps{font-size:14px}.bt button,.tb button{font-size:15px;padding:13px 2px}#scr input,#scr select{padding:12px;font-size:17px}.kp div{font-size:13px}.kp b{font-size:17px}.mt button{font-size:14px}.lgd{font-size:15px;padding:7px 0}.tc{min-width:120px;font-size:15px}.ab{font-size:21px}.bar{font-size:15px}}
+
+#mon .scr2{padding:10px 12px 14px;overflow:auto;flex:1;background:#0a121a}
+#mon .mh{background:linear-gradient(180deg,#163447,#0c2230);color:#b8e0ff;padding:12px 14px;font:700 15px system-ui;border-bottom:1px solid #1e4a5c;letter-spacing:.2px}
+#mon .gpl{display:flex;gap:10px;margin:8px 0 10px;flex-wrap:wrap}
+#mon .gpl>div{flex:1;min-width:110px;background:#0b1a26;border:1px solid #1f4a5a;border-radius:10px;padding:10px;text-align:center}
+#mon .gpl b{display:block;font-size:20px;margin-top:2px}
+#mon .gpl small{color:#8ab;font-size:12px}
+#mon .w2{background:linear-gradient(90deg,#1a2e1a,#0b1a26);border:1px solid #2a5a3a;color:#b8f0c8}
+#mon small{color:#7a9;line-height:1.4}
+#mon .tcs{gap:8px;margin:8px 0}
+#mon .tc{background:#0b1520;border-color:#243a48}
+#mon .tc.sel{outline:2px solid #ffd54a;background:#132030}
+#mon .hd2{margin:8px 0 4px}
+#mon .kp{gap:6px}
+#mon .kp div{background:#0b1520;border:1px solid #1e3344;border-radius:8px}
+
+@media(max-width:900px){
+#mon *{max-width:100%}
+#mon .lg img{pointer-events:none}
+.phone{background:#0e1420;box-shadow:0 0 0 2px #111,0 20px 50px #000c}
+}
+#tbx{min-height:0}
 </style></head><body>
-<div id="app"><div id="board"></div><div id="mon"></div><div id="pw"><div class="phone"><div class="bar" onclick="$('#pw').classList.toggle('down')"><span id="clk"></span><span id="gd"></span><span>⌄</span></div><div id="bk" class="bkb"></div><div id="scr"></div></div></div></div>
+<div id="tbx"></div><div id="app"><div id="board"></div><div id="mon"></div><div id="pw"><div class="phone"><div class="bar" onclick="$('#pw').classList.toggle('down')"><span id="clk"></span><span id="gd"></span><span>⌄</span></div><div id="bk" class="bkb"></div><div id="scr"></div></div></div></div>
 <div id="setup"><div class="box"><h1 class="t1">🎲 Mi Inversión</h1>
 <input id="ob" placeholder="🎯 Objetivo del monto (ej. comprar un terreno)"><label>Modo</label><select id="mk"><option value="r">Rápido · 15 turnos · meta $20,000 · inicio $4,000</option><option value="m">Medio · 30 turnos · meta $50,000 · inicio $10,000</option><option value="l">Largo · 50 turnos · meta $100,000 · inicio $20,000</option></select>
-<input id="n0" placeholder="Tu nombre" value="Jugador 1">
+<label>Jugadores (mismo dispositivo)</label><select id="np" onchange="npUI()"><option value="1">1 jugador</option><option value="2">2 jugadores</option></select>
+<input id="n0" placeholder="Nombre jugador 1" value="Jugador 1"><input id="n1" placeholder="Nombre jugador 2" value="Jugador 2" style="display:none">
 <button onclick="newGame()">▶ Nueva partida</button><button class="g" style="color:#333;background:#ddd" onclick="cloudLoad()">📂 Cargar partida</button><button id="cont" class="g" style="color:#333;background:#ddd" onclick="loadLocal()">Continuar guardada</button>
-<small>Los precios reales (CoinGecko) se cargan al iniciar si hay internet; las xStocks usan precios de referencia. Todo se guarda en este dispositivo.</small></div></div>
-<div id="dlg"><div class="box" id="dlb"></div></div><div id="how"><div class="box"><h1 class="t1">📖 Cómo se juega</h1><ol><li><b>Meta:</b> llega al patrimonio objetivo y luego llévalo a tu banco (vende y usa “Traer de Lulubex”) antes de que terminen los turnos.</li><li><b>Dinero:</b> en 🏦 Banco recibes sueldo y haces SINPE a Lulubex (Invertir), donde compras criptos y acciones (xStock). CoinMer te deja seguir el mercado.</li><li><b>Noticias:</b> cada ronda trae noticias 🌐 generales (afectan todo), 🏭 de sector y 🎯 de un solo activo. Hay mercado alcista, bajista o lateral.</li><li><b>Turnos:</b> compra/vende y pulsa “Terminar turno”; el mercado se mueve.</li><li><b>Monitor:</b> sigue cada posición con su gráfico desde que la compraste. Míralas por separado o comparadas con colores distintos; pasa el mouse o arrastra el dedo para ver el plano.</li><li><b>Celular:</b> en pantallas pequeñas toca su barra superior para bajarlo o subirlo.</li><li>Guarda y carga tu partida por nombre en este dispositivo.</li></ol><button onclick="how(0)">¡A jugar!</button></div></div>
+<small>Los precios reales (CoinGecko) se cargan al iniciar si hay internet; las xStocks usan precios de referencia. Guardado local en este dispositivo.</small></div></div>
+<div id="dlg"><div class="box" id="dlb"></div></div><div id="how"><div class="box"><h1 class="t1">📖 Cómo se juega</h1><ol><li><b>Meta:</b> llega al patrimonio objetivo y luego llévalo a tu banco (vende y usa “Traer de Lulubex”) antes de que terminen los turnos.</li><li><b>Dinero:</b> en 🏦 Banco recibes sueldo y haces SINPE a Lulubex (Invertir), donde compras criptos y acciones (xStock). CoinMer te deja seguir el mercado.</li><li><b>Noticias:</b> cada ronda trae noticias 🌐 generales (afectan todo), 🏭 de sector y 🎯 de un solo activo. Hay mercado alcista, bajista o lateral.</li><li><b>Turnos:</b> compra/vende y pulsa “Terminar turno”; el mercado se mueve.</li><li><b>Monitor:</b> sigue cada posición con su gráfico desde que la compraste. Míralas por separado o comparadas con colores distintos; pasa el mouse o arrastra el dedo para ver el plano.</li><li><b>Celular:</b> en pantallas pequeñas toca su barra superior para bajarlo o subirlo.</li><li>Guarda y carga tu partida por nombre en este dispositivo. Con 2 jugadores se turnan en el mismo aparato.</li></ol><button onclick="how(0)">¡A jugar!</button></div></div>
 <div id="over"><div class="box" id="ov"></div></div><div id="toast"></div>
 <script>
 const RAW=`AAVE|Aave|aave|190|11|D
@@ -135,10 +174,11 @@ async function cget(c){const g=cfg();if(!g.u||!c)return null;try{const r=await f
 async function cput(c,s){const g=cfg();if(!g.u||!c)return;try{await fetch(`${g.u}/rest/v1/partidas`,{method:'POST',headers:{...hd(),Prefer:'resolution=merge-duplicates'},body:JSON.stringify({codigo:c,estado:s})})}catch(e){}}
 function cfgSb(){const u=prompt('URL de Supabase (https://xxxx.supabase.co)',cfg().u||'');if(!u)return;const k=prompt('Clave anon / publishable',cfg().k||'');localStorage.sb=JSON.stringify({u:u.replace(/\/$/,''),k})}
 async function live(){try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+A.filter(a=>a.id).map(a=>a.id).join(',')+'&vs_currencies=usd');const j=await r.json();let n=0;A.forEach(a=>{const p=j[a.id]&&j[a.id].usd;if(p){S.p[a.s]=p;n++}});S.p.GLDx=S.p.PAXG*.093;A.forEach(a=>S.h[a.s]=[S.p[a.s]]);toast(n+' precios reales cargados')}catch(e){toast('Sin conexión: precios de referencia')}}
-async function newGame(){if(!$('#ob').value.trim())return toast('Escribe el objetivo del monto (ej. comprar un terreno)');const m=MD[$('#mk').value];
+function npUI(){const n=+$('#np').value;$('#n1').style.display=n>1?'':'none'}
+async function newGame(){if(!$('#ob').value.trim())return toast('Escribe el objetivo del monto (ej. comprar un terreno)');const m=MD[$('#mk').value],np=Math.min(2,Math.max(1,+$('#np').value||1));
 S={obj:$('#ob').value.trim(),t:m.t,g:m.g,sal:m.g/100,turn:1,cp:0,v:0,p:{},h:{},pl:[],news:[{k:'side',t:'Apertura de mercados: sesión inicial con volumen moderado. ¡Que comience la partida!'}],log:[],d0:Date.now()};
 A.forEach(a=>{S.p[a.s]=a.p;S.h[a.s]=[a.p]});await live();S.d={};A.forEach(a=>S.d[a.s]=bridge(S.p[a.s]*(1+(rnd()-.5)*a.vol/100*.8),S.p[a.s],a.vol));
-S.pl.push({n:$('#n0').value.trim()||'Jugador 1',bank:m.g/5,cash:0,h:{},w:['BTC','NVDAx','AAPLx']});
+for(let i=0;i<np;i++)S.pl.push({n:$('#n'+i).value.trim()||('Jugador '+(i+1)),bank:m.g/5,cash:0,h:{},w:['BTC','NVDAx','AAPLx']});
 ui.a='h';save();R();how(1)}
 function save(up=true){if(!S)return;if(up)S.v++;check();localStorage.inv=JSON.stringify({S})}
 function loadLocal(){try{S=JSON.parse(localStorage.inv).S;R()}catch(e){toast('No hay partida guardada')}}
@@ -153,12 +193,14 @@ async function cloudLoad(){dlg(`<h1 class="t1">📂 Cargar partida</h1><input id
 function ldl(){const q=$('#sq').value.toLowerCase();$('#sli').innerHTML=LS.filter(z=>(z.n||'').toLowerCase().includes(q)).map(z=>`<div data-k="${esc(z.k)}" onclick="doLoad(this.dataset.k)">📁 <b>${esc(z.n||z.k)}</b> <small>turno ${z.t}</small></div>`).join('')||'<div><small>No hay partidas guardadas.</small></div>'}
 function doLoad(k){const x=svs()[k];if(!x)return toast('No se pudo cargar');S=x;dlx();R();toast('Cargada: '+S.name)}
 function check(){if(S.over)return;S.pl.forEach((p,i)=>{if(S.over)return;if(p.bank>=S.g){S.over={w:i,why:'meta'};ui.an={t:'b'}}else if(net(p)>=S.g&&!p.rch){p.rch=1;ui.an={t:'r'}}})}
-function endTurn(){if(!mine())return;ui.a='h';
-if(S.turn>=S.t){let b=0;S.pl.forEach((p,i)=>{if(net(p)>net(S.pl[b]))b=i});S.over={w:b,why:'tiempo'}}
+function endTurn(){if(!mine())return;ui.a='h';let ho=0;
+if(S.cp<S.pl.length-1){S.cp++;ho=1}
+else if(S.turn>=S.t){let b=0;S.pl.forEach((p,i)=>{if(net(p)>net(S.pl[b]))b=i});S.over={w:b,why:'tiempo'}}
 else{advance();S.cp=0}
 save();R();
 if(S.over)return;
-toast('Turno '+S.turn+' · el mercado se movió')}
+if(ho)dlg(`<h1 class="t1">Turno de ${esc(S.pl[S.cp].n)}</h1><p>Pasa el dispositivo a <b>${esc(S.pl[S.cp].n)}</b>. Cuando termine su turno, el mercado avanzará.</p><button onclick="dlx()">Continuar</button>`);
+else toast('Turno '+S.turn+' · el mercado se movió')}
 function bridge(p0,p1,vol,n=25){const sg=vol/100*.5/Math.sqrt(n),W=[0];let w=0;for(let i=1;i<n;i++){w+=randn();W.push(w)}const o=[];for(let i=0;i<n;i++){const t=i/(n-1);o.push(Math.max(1e-9,(p0+(p1-p0)*t)*(1+(W[i]-t*W[n-1])*sg)))}o[0]=p0;o[n-1]=p1;return o}
 function advance(){S.turn++;const ev=[];
 const g=pick(['up','down','side']);ev.push({k:g,l:'🌐 General',t:pick(GN[g]),all:1});
@@ -184,7 +226,7 @@ const filt=st=>`<div class="tb"><button class="${ui.t=='c'?'':'g'}" onclick="ui.
 function setAmt(n){ui.am=(n>0?n:0).toString();const el=$('#am');if(el){el.value=ui.am}else R()}
 const amt=()=>`<input id="am" type="number" min="0" step="any" inputmode="decimal" placeholder="Monto en USD" value="${ui.am||''}" oninput="ui.am=this.value">`;
 function screen(){const v=V();const back='';
-if(ui.a=='h')return `<div class="w">Patrimonio <b style="font-size:20px">${$$(net(v))}</b><br><small>${v.n} · meta ${$$(S.g)}</small></div><div class="apps"><div onclick="ui.a='m';R()"><div class="ic" style="background:#16a34a">📈</div>CoinMer<br><small>(Mercado)</small></div><div onclick="ui.a='b';R()"><div class="ic" style="background:#eef0f3">🏦</div>Banco</div><div onclick="ui.a='i';R()"><div class="ic" style="background:#2563eb;color:#b8bec9;font:800 34px Georgia,serif">L</div>Lulubex<br><small>Invertir</small></div><div onclick="ui.a='n';R()"><div class="ic" style="background:#ea580c">📰</div>Noticias</div></div><small>Siguiendo</small><div class="wg">${v.w.map(s=>`<div class="w" onclick="op('${s}')">${lg(s,30)}<div><b>${s}</b><br>${$$(S.p[s])}<br>${pc(chg(s))}</div></div>`).join('')||'<small>Toca ☆ en Mercado</small>'}</div>`;
+if(ui.a=='h')return `<div class="w">Patrimonio <b style="font-size:20px">${$$(net(v))}</b><br><small>${v.n} · meta ${$$(S.g)}</small></div><div class="apps"><div onclick="ui.a='m';R()"><div class="ic" style="background:#16a34a">📈</div>CoinMer<br><small>(Mercado)</small></div><div onclick="ui.a='b';R()"><div class="ic" style="background:#eef0f3">🏦</div>Banco</div><div onclick="ui.a='i';R()"><div class="ic" style="background:#2563eb;color:#b8bec9;font:800 34px Georgia,serif">L</div>Lulubex<br><small>(Invertir)</small></div><div onclick="ui.a='n';R()"><div class="ic" style="background:#ea580c">📰</div>Noticias</div></div><small>Siguiendo</small><div class="wg">${v.w.map(s=>`<div class="w" onclick="op('${s}')">${lg(s,30)}<div><b>${s}</b><br>${$$(S.p[s])}<br>${pc(chg(s))}</div></div>`).join('')||'<small>Toca ☆ en Mercado</small>'}</div>`;
 if(ui.a=='m')return back+'<h3>CoinMer (Mercado)</h3>'+filt(1);
 if(ui.a=='n')return back+'<h3>📰 Noticias</h3><small>Noticias ficticias del juego</small>'+S.log.map(t=>`<div class="w">${t}</div>`).join('');
 if(ui.a=='b')return back+`<h3>🏦 Banco</h3><div class="w">Cuenta: <b>${$$(v.bank)}</b><br><small>Sueldo +${$$(S.sal)} por turno · interés 0.3%</small></div><div class="w">Saldo en Lulubex: <b>${$$(v.cash)}</b></div>${amt()}<div class="bt"><button onclick="mv(1)">SINPE a Lulubex</button><button onclick="mv(-1)">Traer de Lulubex</button></div>`;
@@ -213,18 +255,25 @@ MC={ser,t0,n,X,Y,W,L,E,T};
 const ls=ser.map(z=>`<polyline points="${z.r.map((y,i)=>X(z.st-t0+i)+','+Y(y)).join(' ')}" fill="none" stroke="${z.c}" stroke-width="2.4" stroke-linejoin="round"/>`).join('');
 return `<svg class="ch" viewBox="0 0 ${W} ${H}"><defs><filter id="gr"><feTurbulence baseFrequency=".8" numOctaves="2"/><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0"/></filter></defs><rect width="${W}" height="${H}" fill="#06121b"/><rect width="${W}" height="${H}" filter="url(#gr)"/><g class="gr">${g}<line x1="${L}" x2="${L}" y1="${T}" y2="${H-B}" stroke="#9cd"/><line x1="${L}" x2="${W-E}" y1="${H-B}" y2="${H-B}" stroke="#9cd"/></g><line x1="${L}" x2="${W-E}" y1="${Y(0)}" y2="${Y(0)}" stroke="#ffd54a" stroke-dasharray="6 4" stroke-opacity=".8"/>${ls}<g class="xh"><line id="xl" y1="${T}" y2="${H-B}" stroke="#fff" stroke-opacity=".6"/><circle id="xc" r="5" fill="#fff"/><g id="xt"><rect width="150" height="38" rx="6" fill="#000d" stroke="#9cd"/><text id="x1" x="8" y="16" fill="#fff" font-size="13"/><text id="x2" x="8" y="31" fill="#9cd" font-size="12"/></g></g></svg>`}
 function mon(){const v=V(),hs=Object.keys(v.h);
-if(!hs.length)return `<div class="mh">🖥 Mi Inversión · Monitor</div><div class="scr2"><p style="font-size:19px;margin:30px 10px">Aún no tienes posiciones abiertas. Compra una cripto o acción en Lulubex para ver aquí su rendimiento por turnos.</p></div>`;
-if(!v.h[ui.ms])ui.ms=hs[0];const tot=hs.reduce((t,x)=>t+v.h[x].q*S.p[x],0),hd=`<div class="mh">🖥 Monitor · Cartera ${$$(tot)}</div><div class="scr2"><div class="mt"><button class="${ui.mv=='c'?'g':''}" onclick="ui.mv='i';R()">📈 Individual</button><button class="${ui.mv=='c'?'':'g'}" onclick="ui.mv='c';R()">📊 Comparar todas</button></div>`;
-if(ui.mv=='c'){const Ls=hs.map(x=>{const k=v.h[x].k||[S.p[x]];return{x,r:(k[k.length-1]/k[0]-1)*100}}).sort((a,b)=>b.r-a.r);
-return hd+chm(hs,v)+`<div class="w2">🏆 Más rentable hasta ahora: <b>${Ls[0].x}</b> ${pc(Ls[0].r)}</div>`+Ls.map(o=>`<div class="lgd" onclick="ui.ms='${o.x}';ui.mv='i';R()"><i style="background:${CL(o.x)}"></i>${lg(o.x,22)}<b>${o.x}</b><small>${A.find(a=>a.s==o.x).n}</small><span data-lv="${o.x}" class="${o.r>=0?'up':'dn'}">${(o.r>=0?'+':'')+o.r.toFixed(2)}%</span></div>`).join('')+`<small>Toca una fila para verla individual.</small></div>`}
+if(!hs.length)return `<div class="mh">🖥 Monitor de cartera</div><div class="scr2"><p style="font-size:17px;margin:36px 12px;text-align:center;color:#8ab;line-height:1.5">Sin posiciones abiertas.<br><br>Compra en <b style="color:#9cf">Lulubex (Invertir)</b> para ver aquí el rendimiento por turnos y tu ganancia global.</p></div>`;
+if(!v.h[ui.ms])ui.ms=hs[0];
+const tot=hs.reduce((t,x)=>t+v.h[x].q*S.p[x],0);
+const cost=hs.reduce((t,x)=>t+(v.h[x].c||0),0);
+const gpl=tot-cost, gpct=cost>0?(gpl/cost)*100:0;
+const gcls=gpl>=0?'up':'dn';
+const gbar=`<div class="gpl"><div><small>Valor cartera</small><b>${$$(tot)}</b></div><div><small>Ganancia global</small><b class="${gcls}">${(gpl>=0?'+':'')+$$(gpl)}</b></div><div><small>Desde el 1.er turno</small><b class="${gcls}">${(gpct>=0?'+':'')+gpct.toFixed(2)}%</b></div></div>`;
+const hd=`<div class="mh">🖥 Monitor · ${v.n}</div><div class="scr2">${gbar}<div class="mt"><button class="${ui.mv=='c'?'g':''}" onclick="ui.mv='i';R()">📈 Individual</button><button class="${ui.mv=='c'?'':'g'}" onclick="ui.mv='c';R()">📊 Comparar</button></div>`;
+if(ui.mv=='c'){const Ls=hs.map(x=>{const k=v.h[x].k||[S.p[x]];return{x,r:(k[k.length-1]/k[0]-1)*100,pl:(v.h[x].q*S.p[x])-(v.h[x].c||0)}}).sort((a,b)=>b.r-a.r);
+return hd+chm(hs,v)+`<div class="w2">🏆 Más rentable: <b>${Ls[0].x}</b> ${pc(Ls[0].r)}</div>`+Ls.map(o=>`<div class="lgd" onclick="ui.ms='${o.x}';ui.mv='i';R()"><i style="background:${CL(o.x)}"></i>${lg(o.x,22)}<b>${o.x}</b><small>${A.find(a=>a.s==o.x).n}</small><span data-lv="${o.x}" class="${o.r>=0?'up':'dn'}">${(o.r>=0?'+':'')+o.r.toFixed(2)}%</span></div>`).join('')+`<small>Toca una fila para ver el detalle individual.</small></div>`}
 const s=ui.ms,h=v.h[s],k=h.k||[S.p[s]],p=S.p[s],val=h.q*p,pl=val-h.c;
-return hd+`<div class="tcs">${hs.map(x=>`<div class="tc ${x==s?'sel':''}" onclick="ui.ms='${x}';R()">${lg(x,26)} <span class="dot" style="background:${CL(x)}"></span><b>${x}</b><br>${pc((v.h[x].q*S.p[x]/v.h[x].c-1)*100)}</div>`).join('')}</div><div class="hd2">${lg(s,44)}<div><span class="dot" style="background:${CL(s)}"></span><b style="font-size:20px">${A.find(a=>a.s==s).n}</b> <small>${s}</small><br><span style="font-size:22px">${$$(p)}</span> ${pc(chg(s))}</div></div>${ch(k,h.t||S.turn)}<div class="kp"><div>Valor<b>${$$(val)}</b></div><div>Ganancia<b class="${pl>=0?'up':'dn'}">${(pl>=0?'+':'')+$$(pl)}</b></div><div>Rendimiento<b>${pc((val/h.c-1)*100)}</b></div><div>Cantidad<b>${h.q.toFixed(4)}</b></div><div>Precio entrada<b>${$$(k[0])}</b></div><div>Desde turno<b>T${h.t||S.turn}</b></div></div><small>Pasa el mouse o desliza el dedo sobre el gráfico para ver el plano cartesiano.</small></div>`}
-function R(){if(!S){$('#setup').style.display='grid';$('#cont').style.display=localStorage.inv?'':'none';return}
+return hd+`<div class="tcs">${hs.map(x=>`<div class="tc ${x==s?'sel':''}" onclick="ui.ms='${x}';R()">${lg(x,26)} <span class="dot" style="background:${CL(x)}"></span><b>${x}</b><br>${pc((v.h[x].q*S.p[x]/v.h[x].c-1)*100)}</div>`).join('')}</div><div class="hd2">${lg(s,44)}<div><span class="dot" style="background:${CL(s)}"></span><b style="font-size:20px">${A.find(a=>a.s==s).n}</b> <small>${s}</small><br><span style="font-size:22px">${$$(p)}</span> ${pc(chg(s))}</div></div>${ch(k,h.t||S.turn)}<div class="kp"><div>Valor<b>${$$(val)}</b></div><div>Ganancia<b class="${pl>=0?'up':'dn'}">${(pl>=0?'+':'')+$$(pl)}</b></div><div>Rendimiento<b class="${pl>=0?'up':'dn'}">${pc((val/h.c-1)*100)}</b></div><div>Cantidad<b>${h.q.toFixed(4)}</b></div><div>Precio entrada<b>${$$(k[0])}</b></div><div>Desde turno<b>T${h.t||S.turn}</b></div></div><small>Desliza el dedo o pasa el mouse sobre el gráfico para ver cada turno.</small></div>`}
+function R(){if(!S){$('#setup').style.display='grid';$('#cont').style.display=localStorage.inv?'':'none';$('#tbx').className='';$('#tbx').innerHTML='';return}
 $('#setup').style.display='none';const bull=S.news.filter(e=>e.k=='up').length,bear=S.news.filter(e=>e.k=='down').length;
+$('#tbx').className='on';
+$('#tbx').innerHTML=`<button class="ib et" title="Terminar turno" onclick="endTurn()" ${mine()?'':'disabled'}>⏭</button><button class="ib" title="Guardar" onclick="cloudSave()">💾</button><button class="ib" title="Cargar" onclick="cloudLoad()">📂</button><button class="ib" title="Reiniciar" onclick="rst()">🔄</button><button class="ib" title="Pantalla completa" onclick="document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()">⛶</button><button class="ib" title="Instalar" onclick="inst()">📲</button><button class="ib" title="Cómo se juega" onclick="how(1)">❓</button>`;
 $('#board').innerHTML=`<h1>♟ Mi Inversión</h1><small style="color:#cfe">Turno ${S.turn} de ${S.t} · Meta ${$$(S.g)}${S.obj?' · 🎯 '+S.obj:''}</small><div class="track">${[...Array(S.t)].map((_,i)=>`<div class="sq ${i+1==S.turn?'on':i+1<S.turn?'done':''}">${i+1}</div>`).join('')}</div>
 ${S.pl.map((p,i)=>`<div class="pl ${i==S.cp?'cur':''}">♟ ${p.n}${i==S.cp?' · su turno':''} — <b>${$$(net(p))}</b><div class="pb"><i style="width:${Math.min(100,net(p)/S.g*100)}%"></i></div></div>`).join('')}
-${V().rch&&!S.over?`<div class="card" style="background:#fff3c4"><b>🎯 ¡Meta alcanzada!</b> Vende tus posiciones y usa “Traer de Lulubex” para dejar ${$$(S.g)} en tu banco y ganar.</div>`:''}<div class="card"><b>📰 Noticias de la ronda</b> · ${bull>bear?'sesgo alcista':bear>bull?'sesgo bajista':'rango lateral'}${S.news.map(e=>`<p class="${e.k}">${ICO[e.k]} <b>${e.l||''}</b> ${e.t}</p>`).join('')}</div>
-<button onclick="endTurn()" ${mine()?'':'disabled style="opacity:.5"'}>⏭ Terminar turno</button><button class="g" onclick="cloudSave()">💾 Guardar</button><button class="g" onclick="cloudLoad()">📂 Cargar</button><button class="g" onclick="rst()">🔄 Reiniciar</button><button class="g" onclick="document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()">⛶ Pantalla completa</button><button class="g" onclick="inst()">📲 Instalar</button><button class="g" onclick="how(1)">❓ Cómo se juega</button>`;
+${V().rch&&!S.over?`<div class="card" style="background:#fff3c4"><b>🎯 ¡Meta alcanzada!</b> Vende tus posiciones y usa “Traer de Lulubex” para dejar ${$$(S.g)} en tu banco y ganar.</div>`:''}<div class="card"><b>📰 Noticias de la ronda</b> · ${bull>bear?'sesgo alcista':bear>bull?'sesgo bajista':'rango lateral'}${S.news.map(e=>`<p class="${e.k}">${ICO[e.k]} <b>${e.l||''}</b> ${e.t}</p>`).join('')}</div>`;
 const th='t-'+(ui.a=='d'?ui.from:ui.a);$('#scr').className=th;$('#bk').className='bkb '+th;$('#bk').innerHTML=ui.a=='h'?'':`<button class="bk" onclick="ui.a='${ui.a=='d'?ui.from:'h'}';R()">‹ ${ui.a=='d'?'Volver':'Inicio'}</button>`;$('#scr').innerHTML=screen();$('#mon').innerHTML=mon();
 if(S.over){$('#over').style.display='grid';$('#ov').innerHTML=`<h1 class="t1">${S.over.why=='meta'?'🏆 ¡Meta alcanzada!':'⏰ Fin de la partida'}</h1><p>Gana <b>${S.pl[S.over.w].n}</b> con ${$$(net(S.pl[S.over.w]))}.</p>${S.over.why=='meta'&&S.obj?`<p>🎯 Objetivo cumplido: <b>${esc(S.obj)}</b></p>`:''}<button onclick="S=null;$('#over').style.display='none';R()">Nueva partida</button>`}else $('#over').style.display='none';if(ui.an){const a=ui.an;ui.an=null;anim(a)}}
 let dpr;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dpr=e});
